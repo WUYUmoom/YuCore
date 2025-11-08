@@ -1,0 +1,11 @@
+#是否启动翻译路径查找,关闭请确保插件相片功能是否是中文
+TranslatePath: true
+#标签系统是否启动
+PokemonLabel: true
+# 消息设置
+#可选择两种方式Message与Title
+#Message方式 直接写上信息即可
+#Title这样的方式 Title,主标题,副标题,0,20,0
+Message:
+  noBattle: "Title,禁止对战,你无法对该精灵发起对战,0,20,20"
+  noCapture: "Title,禁止捕捉,你无法对该精灵进行捕捉,0,20,20"

@@ -1,0 +1,6 @@
+name: YuCore
+version: '1.1.8'
+main: com.wuyumoom.yucore.YuCore
+api-version: '1.21'
+depend: [ NBTAPI ]
+softdepend: [ PlaceholderAPI ]
