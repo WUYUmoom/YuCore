@@ -11,19 +11,12 @@ public abstract class AbstractUI implements InventoryHolder {
     private Player player;
     private int size;
     private Inventory inventory;
-    private Boolean isClick = true;
 
     public AbstractUI(String title, Player player, int size) {
         this.title = title;
         this.player = player;
         this.size = size;
         this.inventory = Bukkit.createInventory(this, this.size, this.title);
-    }
-    public void setClick(Boolean click) {
-        isClick = click;
-    }
-    public Boolean getClick() {
-        return isClick;
     }
 
     @Override
@@ -52,6 +45,14 @@ public abstract class AbstractUI implements InventoryHolder {
 
     public int getSize() {
         return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 }
 

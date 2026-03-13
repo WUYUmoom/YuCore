@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.wuyumoom.yucore.api.ItemStackAPI;
+import com.wuyumoom.yucore.api.NMS;
 import com.wuyumoom.yucore.api.pokemon.PokemonAPI;
 import com.wuyumoom.yucore.file.view.Button;
 import net.minecraft.nbt.NbtCompound;

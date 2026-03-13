@@ -1,29 +1,22 @@
 package com.wuyumoom.yucore.yulistener;
 
 import com.cobblemon.mod.common.api.Priority;
-import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
-import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
-import com.cobblemon.mod.common.api.events.battles.BattleStartedPreEvent;
-import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
+import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
 import com.cobblemon.mod.common.api.events.pokeball.ThrownPokeballHitEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonNicknamedEvent;
 import com.cobblemon.mod.common.battles.BattleSide;
-import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.BukkitAPI;
 import com.wuyumoom.yucore.api.pokemon.BattleCaptureFix;
 import com.wuyumoom.yucore.api.pokemon.PokemonLabel;
-import com.wuyumoom.yucore.battlemanager.BattleManager;
 import kotlin.Unit;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.bukkit.Bukkit;
-
-import java.util.Objects;
 
 public class PokemonLabelEvent {
     public PokemonLabelEvent() {
@@ -39,41 +32,9 @@ public class PokemonLabelEvent {
             this.isYuBanNick(event);
             return Unit.INSTANCE;
         });
-        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.HIGHEST, event -> {
-            this.battleVictory(event);
-            return Unit.INSTANCE;
-        });
-        CobblemonEvents.BATTLE_FLED.subscribe(Priority.HIGHEST, event -> {
-            this.battleFledEvent(event);
-            return Unit.INSTANCE;
-        });
     }
 
 
-    private void battleFledEvent(BattleFledEvent event) {
-        if (event.getBattle().getPlayers().size() <= 1) return;
-        if (BattleManager.getBattleManagerMap().containsKey(event.getBattle())) {
-            ServerPlayerEntity entity = event.getPlayer().getEntity();
-            if (entity == null) {
-                return;
-            }
-            BattleManager battleManager = BattleManager.getBattleManagerMap().get(event.getBattle());
-            battleManager.setWin(battleManager.getPlayer(Bukkit.getPlayer(event.getPlayer().getEntity().getUuid())));
-        }
-    }
-
-    private void battleVictory(BattleVictoryEvent event) {
-        if (event.getBattle().getPlayers().size() <= 1) return;
-        if (BattleManager.getBattleManagerMap().containsKey(event.getBattle())) {
-            for (BattleActor winner : event.getWinners()) {
-                PlayerBattleActor playerActor = (PlayerBattleActor) winner;
-                ServerPlayerEntity player = playerActor.getEntity();
-                if (player != null) {
-                    BattleManager.getBattleManagerMap().get(event.getBattle()).setWin(Objects.requireNonNull(Bukkit.getPlayer(player.getUuid())));
-                }
-            }
-        }
-    }
 
     private void isYuBanNick(PokemonNicknamedEvent event) {
         if (PokemonLabel.getInstance(event.getPokemon()).getLabelBoolean("YuBanNick")) {
@@ -107,7 +68,7 @@ public class PokemonLabelEvent {
         }
     }
 
-    private void isYuBanBattle(BattleStartedPreEvent event) {
+    private void isYuBanBattle(BattleStartedEvent.Pre event) {
         if (event.getBattle().getPlayers().size() > 1) {
             return;
         }

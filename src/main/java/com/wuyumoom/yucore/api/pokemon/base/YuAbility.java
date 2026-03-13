@@ -17,7 +17,7 @@ public class YuAbility {
         if (BukkitAPI.isPureChinese(lowerCase)&&!abilityMap.isEmpty()) {
             return abilityMap.get(lowerCase);
         } else {
-            return  Abilities.INSTANCE.get(lowerCase).create(true, Priority.LOWEST);
+            return  Abilities.get(lowerCase).create(true, Priority.LOWEST);
         }
     }
 

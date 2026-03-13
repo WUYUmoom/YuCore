@@ -16,7 +16,7 @@ public class YuPokeBall {
         if (BukkitAPI.isPureChinese(lowerCase)&&!zhPokeBall.isEmpty()) {
             return zhPokeBall.get(lowerCase);
         } else {
-            return PokeBalls.INSTANCE.getPokeBall(Identifier.of("cobblemon:"+lowerCase));
+            return PokeBalls.getPokeBall(Identifier.of("cobblemon:"+lowerCase));
         }
     }
 

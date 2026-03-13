@@ -18,7 +18,7 @@ public class ViewConfiguration {
         fileName = file.getName();
 
         for (String view :file.getConfigurationSection("Button").getKeys(false)) {
-            button.put(view, new Button(view,file.getString("Button."+view+".name"),file.getString("Button."+view+".slot"),file.getStringList("Button."+view+".lore"),file.getString("Button."+view+".id")));
+            button.put(view, new Button(view,file.getString("Button."+view+".name"),file.getString("Button."+view+".slot"),file.getStringList("Button."+view+".lore"),file.getString("Button."+view+".id","")));
         }
     }
 

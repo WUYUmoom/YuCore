@@ -17,7 +17,7 @@ public class YuMove {
         if (BukkitAPI.isPureChinese(lowerCase)&&!YuMove.moves.isEmpty()) {
             return moves.get(lowerCase);
         } else {
-            return Moves.INSTANCE.getByName(lowerCase).create();
+            return Moves.getByName(lowerCase).create();
         }
     }
     public static String getMoveSkills(Pokemon pokemon, int slots) {

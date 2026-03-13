@@ -14,13 +14,13 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemStackAPI {
-    public static ItemStack createItem(ConfigurationSection yamlConfiguration,boolean siNbt){
+    public static ItemStack createItem(ConfigurationSection yamlConfiguration,boolean isNbt){
         String name = BukkitAPI.onReplace(yamlConfiguration.getString("name","名称配置错误"));
         List<String> lore = BukkitAPI.onReplace(yamlConfiguration.getStringList("lore"));
         Material material = Material.getMaterial(BukkitAPI.onReplace(yamlConfiguration.getString("id")));
         if (material != null){
             ItemStack itemStack = ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore);
-            if (siNbt){
+            if (isNbt){
                 return setNBT(itemStack, "yuitem", yamlConfiguration.getName());
             }
             return ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore);

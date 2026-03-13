@@ -48,7 +48,6 @@ public class PokemonAPI {
         nbtTagCompound = pokemon.saveToNBT(serverPlayerEntity.getRegistryManager(), nbtTagCompound);
         return nbtTagCompound.toString();
     }
-    @Deprecated
     public static Pokemon onSetForPokemon(Pokemon pokemon, String[] strings) {
         for (String string : strings) {
             try {
@@ -60,7 +59,6 @@ public class PokemonAPI {
         }
         return pokemon;
     }
-    @Deprecated
     public static void onSetPokemon(Pokemon pokemon, String string) throws Exception {
         String[] actor = BukkitAPI.onSetString(string, ":");
         switch (actor[0]) {
@@ -73,10 +71,15 @@ public class PokemonAPI {
                 }
                 break;
             case "技能":
-                pokemon.getMoveSet().setMove(0, YuMove.getMove(actor[1]));
+                if (actor[1].contains("@")){
+                    String[] strings = BukkitAPI.onSetString(actor[1], "@");
+                    pokemon.getMoveSet().setMove(Integer.parseInt(strings[0]), YuMove.getMove(strings[1]));
+                }else {
+                    pokemon.getMoveSet().setMove(0, YuMove.getMove(actor[1]));
+                }
                 break;
             case "捕捉":
-                if (!Boolean.getBoolean(actor[1])) {
+                if (!Boolean.parseBoolean(actor[1])) {
                     UncatchableProperty.INSTANCE.uncatchable().apply(pokemon);
                 }
                 break;
@@ -123,6 +126,11 @@ public class PokemonAPI {
             case "等级":
                 pokemon.setLevel(Integer.parseInt(actor[1]));
                 break;
+            case "6evs":
+                for (Stat stat : onGetIVS()) {
+                    pokemon.getEvs().set(stat, Integer.parseInt(actor[1]));
+                }
+                break;
             case "StatsAll":
             case "6v":
                 for (Stat stat : onGetIVS()) {
@@ -157,6 +165,44 @@ public class PokemonAPI {
             case "交易":
                 pokemon.setTradeable(Boolean.parseBoolean(actor[1]));
                 break;
+            case "努力攻击":
+                pokemon.setEV(Stats.ATTACK, Integer.parseInt(actor[1]));
+                break;
+            case "努力防御":
+                pokemon.setEV(Stats.DEFENCE, Integer.parseInt(actor[1]));
+                break;
+            case "努力速度":
+                pokemon.setEV(Stats.SPEED, Integer.parseInt(actor[1]));
+                break;
+            case "努力特防":
+                pokemon.setEV(Stats.SPECIAL_DEFENCE, Integer.parseInt(actor[1]));
+                break;
+            case "努力特攻":
+                pokemon.setEV(Stats.SPECIAL_ATTACK, Integer.parseInt(actor[1]));
+                break;
+            case "超训6v":
+                for (Stat stat : onGetIVS()) {
+                    pokemon.hyperTrainIV(stat, Integer.parseInt(actor[1]));
+                }
+                break;
+            case "超训血量":
+                pokemon.hyperTrainIV(Stats.HP, Integer.parseInt(actor[1]));
+                break;
+            case "超训攻击":
+                pokemon.hyperTrainIV(Stats.ATTACK, Integer.parseInt(actor[1]));
+                break;
+            case "超训防御":
+                pokemon.hyperTrainIV(Stats.DEFENCE, Integer.parseInt(actor[1]));
+                break;
+            case "超训速度":
+                pokemon.hyperTrainIV(Stats.SPEED, Integer.parseInt(actor[1]));
+                break;
+            case "超训特防":
+                pokemon.hyperTrainIV(Stats.SPECIAL_DEFENCE, Integer.parseInt(actor[1]));
+                break;
+            case "超训特攻":
+                pokemon.hyperTrainIV(Stats.SPECIAL_ATTACK, Integer.parseInt(actor[1]));
+                break;
             default:
                 System.out.println(actor[1] + "参数错误");
                 break;
@@ -164,9 +210,11 @@ public class PokemonAPI {
     }
 
     //获取随机属性就是血量什么的
+    private static final List<Stat> IV_STATS_CACHE = new ArrayList<>(Cobblemon.INSTANCE.getStatProvider().ofType(Stat.Type.PERMANENT));
+    private static final Random RANDOM = new Random();
+
     public static Stat getRandomStat() {
-        List<Stat> stats = new ArrayList<>(onGetIVS());
-        return stats.get(new Random().nextInt(stats.size()));
+        return IV_STATS_CACHE.get(RANDOM.nextInt(IV_STATS_CACHE.size()));
     }
 
     //获取全部属性
@@ -209,6 +257,7 @@ public class PokemonAPI {
         return i;
     }
 
+
     public static String getIVS_SUM(Pokemon pokemon) {
         int ivs = pokemon.getIvs().get(Stats.HP) + pokemon.getIvs().get(Stats.ATTACK) + pokemon.getIvs().get(Stats.DEFENCE) + pokemon.getIvs().get(Stats.SPECIAL_ATTACK) + pokemon.getIvs().get(Stats.SPECIAL_DEFENCE) + pokemon.getIvs().get(Stats.SPEED);
         DecimalFormat df = new DecimalFormat("#0.##");
@@ -221,12 +270,12 @@ public class PokemonAPI {
         return df.format((int) (evs / 510.0D * 100.0D)) + "%";
     }
 
+    private static final Pattern QUOTE_PATTERN = Pattern.compile("'(.*?)'");
     public static String onGetTranslatePath(Object path) {
         if (!YuCore.isIsTranslatePath()) {
             return ((MutableText) path).getString();
         }
-        Pattern pattern = Pattern.compile("'(.*?)'");
-        Matcher matcher = pattern.matcher(path.toString().replaceAll(" ", ""));
+        Matcher matcher = QUOTE_PATTERN.matcher(path.toString().replace(" ", ""));
         if (matcher.find()) {
             String s = YuCore.getCobblemon().getZh().get(matcher.group(1));
             if (s != null) {

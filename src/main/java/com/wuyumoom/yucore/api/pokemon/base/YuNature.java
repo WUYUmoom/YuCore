@@ -15,7 +15,7 @@ public class YuNature {
         if (BukkitAPI.isPureChinese(lowerCase)&&!YuNature.nature.isEmpty()) {
             return YuNature.nature.get(lowerCase);
         } else {
-            return Natures.INSTANCE.getNature(lowerCase);
+            return Natures.getNature(lowerCase);
         }
     }
 

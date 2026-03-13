@@ -32,6 +32,9 @@ public class BukkitAPI {
         return slotsArray;
     }
     public static int[] onSetInt(String s) {
+        if (s == null){
+            return null;
+        }
         String[] slotsArray = s.split(",");
         int[] slot = new int[slotsArray.length];
         for (int i = 0; i < slotsArray.length; i++) {

@@ -6,6 +6,7 @@ import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.BukkitAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -42,13 +43,42 @@ public class YuSpecies {
         addSpeciesList(label, species, labelSpecies);
     }
 
+
+    private static final Random random = new Random();
+    // 随机获取一个Species
+    public static Species getRandomSpecies() {
+        List<Species> speciesList = new ArrayList<>(species.values());
+        return speciesList.get(random.nextInt(speciesList.size()));
+    }
+
     public static Species getSpecies(String name) throws Exception {
+        if (name.contains("随机")){
+            if (name.contains("@")){
+                List<Species> speciesList = new ArrayList<>(species.values());
+                String[] strings = BukkitAPI.onSetString(name, "@");
+                for (String string : strings) {
+                    if (string.contains("!")){
+                        List<Species> labelSpecies1 = labelSpecies.get(string.replace("!", ""));
+                        speciesList.removeAll(labelSpecies1);
+                    }else {
+                        // 处理不包含"!"的情况
+                        List<Species> includeSpecies = labelSpecies.get(string);
+                        if (includeSpecies != null) {
+                            speciesList.retainAll(includeSpecies);  // 只保留包含在标签中的物种
+                        }
+                    }
+                }
+                return speciesList.get(random.nextInt(speciesList.size()));
+            }else {
+                return getRandomSpecies();
+            }
+        }
         String lowerCase = name.toLowerCase(Locale.ENGLISH);
         Species species;// 对于非中文名称同样处理
         if (BukkitAPI.isPureChinese(lowerCase) && !YuSpecies.species.isEmpty()) {
             species = YuSpecies.species.get(lowerCase);
         } else {
-            species = PokemonSpecies.INSTANCE.getByName(lowerCase);
+            species = PokemonSpecies.getByName(lowerCase);
         }
         if (species == null) {
             throw new Exception("未找到对应宝可梦种类: " + name); // 抛出异常，提示未找到对应宝可梦
@@ -82,7 +112,7 @@ public class YuSpecies {
     private static void loadLabels(String labelString, List<Species> species) {
         String[] labels = BukkitAPI.onSetString(labelString, ",");
         for (String label : labels) {
-            List<Species> speciesList = YuSpecies.getLabelSpecies().get(label);
+            List<Species> speciesList = getLabelSpecies().get(label);
             if (speciesList != null && !speciesList.isEmpty()) {
                 species.addAll(speciesList);
             }
@@ -103,7 +133,7 @@ public class YuSpecies {
                 int start = Integer.parseInt(sp[0]);
                 int end = Integer.parseInt(sp[1]);
                 for (int i = start; i <= end; i++) {
-                    Species cobblemon = PokemonSpecies.INSTANCE.getByPokedexNumber(i, "cobblemon");
+                    Species cobblemon = PokemonSpecies.getByPokedexNumber(i, "cobblemon");
                     if (cobblemon == null){
                         System.out.println("未知的精灵编号: " + i);
                     }

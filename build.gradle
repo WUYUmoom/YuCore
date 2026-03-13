@@ -1,66 +1,95 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.0.20' apply(false)
-    id 'architectury-plugin' version '3.4-SNAPSHOT' apply(false)
-    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply(false)
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
 }
 
 group = 'com.wuyumoom.yucore.YuCore'
-version = '1.1.7-SNAPSHOT'
+version = '1.4.5-SNAPSHOT'
 
-allprojects {
-    apply plugin: 'org.jetbrains.kotlin.jvm'
-    apply plugin: 'architectury-plugin'
-    apply plugin: 'dev.architectury.loom'
-
-    architectury {
-        minecraft = '1.21.1'
+loom {
+    splitEnvironmentSourceSets()
+}
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = 'https://nexus.wuyumoom.top:2026/repository/maven-public/'
     }
+
+    maven {
+        url = 'https://maven.impactdev.net/repository/development/'
+    }
+
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
+    maven {
+        name = 'placeholderapi'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+}
+dependencies {
+    /*<-minecraft->*/
+    minecraft "com.mojang:minecraft:1.21.1"
+    //mappings(loom.officialMojangMappings())
+    mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
+    /*<-cobblemon->*/
+    modCompileOnly("com.cobblemon:fabric:1.7.1+1.21.1")
+
+    /*<-spigot->*/
+    //compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
+    implementation 'org.spigotmc:spigot:1.21.1-R0.1@jar'
+    //compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+    //PAPI
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+    //NBTAPI
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.2-SNAPSHOT")
+
+    modImplementation "net.fabricmc:fabric-loader:0.16.13"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.115.4+1.21.1"
+}
+processResources {
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand project.properties
+    }
+}
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'wuyumoom'
+            artifactId = 'yucore'
+            version = '1.4.4'
+
+            artifact(file("build/libs/YuCore-1.4.4-SNAPSHOT.jar")) {
+                classifier = 'YuCore'
+            }
+        }
+    }
+
     repositories {
-        mavenLocal()
-        mavenCentral()
-
         maven {
-            url = 'https://maven.impactdev.net/repository/development/'
+            name = 'nexus'
+            url = uri('https://nexus.wuyumoom.top:2026/repository/maven-releases/')
+            credentials {
+                username = 'admin'
+                password = '123123qq..'
+            }
         }
-
-        maven {
-            name = 'spigotmc-repo'
-            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-        }
-
-        maven {
-            name = "CodeMC"
-            url = uri("https://repo.codemc.io/repository/maven-public/")
-        }
-    }
-    dependencies {
-        implementation fileTree(dir: 'ilb',includes: ['*.jar'])
-        /*<-minecraft->*/
-        minecraft "com.mojang:minecraft:1.21.1"
-        mappings(loom.officialMojangMappings())
-        //mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
-        /*<-cobblemon->*/
-        modCompileOnly("com.cobblemon:mod:1.6.1+1.21.1")
-
-        /*<-spigot->*/
-        compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
-        //compileOnly 'org.spigotmc:spigot:1.21.1-R0.1-SNAPSHOT'
-
-        modImplementation "net.fabricmc:fabric-loader:0.16.13"
-        modImplementation "net.fabricmc.fabric-api:fabric-api:0.115.4+1.21.1"
-
-        testImplementation 'org.jetbrains.kotlin:kotlin-test'
-    }
-    processResources {
-        filteringCharset 'UTF-8'
-        filesMatching('plugin.yml') {
-            expand project.properties
-        }
-    }
-    test {
-        useJUnitPlatform()
-    }
-    kotlin {
-        jvmToolchain(21)
     }
 }

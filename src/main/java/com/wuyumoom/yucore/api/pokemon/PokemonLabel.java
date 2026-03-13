@@ -20,7 +20,7 @@ public class PokemonLabel {
 
     private final NbtCompound nbt;
     private Set<String> listLabel = new HashSet<>();
-    private Pokemon pokemon;
+    private final Pokemon pokemon;
 
     public static PokemonLabel getInstance(Pokemon pokemon) {
         return new PokemonLabel(pokemon);

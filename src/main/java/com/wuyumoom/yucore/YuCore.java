@@ -1,6 +1,6 @@
 package com.wuyumoom.yucore;
 
-import com.wuyumoom.yucobblemonapi.lang.CobblemonLang;
+import com.wuyumoom.yucore.lang.CobblemonLang;
 import com.wuyumoom.yucore.api.Message;
 import com.wuyumoom.yucore.lang.LangLoad;
 import com.wuyumoom.yucore.papi.Papi;
