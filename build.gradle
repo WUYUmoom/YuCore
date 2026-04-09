@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.wuyumoom.yucore.YuCore'
-version = '1.4.5-SNAPSHOT'
+version = '1.6.4-SNAPSHOT'
 
 loom {
     splitEnvironmentSourceSets()
@@ -38,15 +38,16 @@ repositories {
 dependencies {
     /*<-minecraft->*/
     minecraft "com.mojang:minecraft:1.21.1"
-    //mappings(loom.officialMojangMappings())
-    mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
+    mappings(loom.officialMojangMappings())
+    //mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
     /*<-cobblemon->*/
     modCompileOnly("com.cobblemon:fabric:1.7.1+1.21.1")
 
     /*<-spigot->*/
     //compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
-    implementation 'org.spigotmc:spigot:1.21.1-R0.1@jar'
+    compileOnly(fileTree(dir: "libs", includes: ["*.jar"]))
+    //implementation 'org.spigotmc:spigot:1.21.1-R0.1@jar'
     //compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     //PAPI
     compileOnly 'me.clip:placeholderapi:2.11.6'
@@ -74,9 +75,9 @@ publishing {
         maven(MavenPublication) {
             groupId = 'wuyumoom'
             artifactId = 'yucore'
-            version = '1.4.4'
+            version = project.version.toString().replace("-SNAPSHOT", "")
 
-            artifact(file("build/libs/YuCore-1.4.4-SNAPSHOT.jar")) {
+            artifact(file("build/libs/YuCore-${project.version}.jar")) {
                 classifier = 'YuCore'
             }
         }
@@ -92,4 +93,9 @@ publishing {
             }
         }
     }
+}
+tasks.register("neoforgeJar", Jar) {
+    archiveFileName = "$project.name-$project.version-neoforge.jar"
+    from(sourceSets.main.output, sourceSets.main.resources)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

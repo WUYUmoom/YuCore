@@ -6,7 +6,7 @@ import com.wuyumoom.yucore.api.BukkitAPI;
 import com.wuyumoom.yucore.api.pokemon.PokemonAPI;
 import com.wuyumoom.yucore.api.pokemon.PokemonLabel;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +38,7 @@ public class Papi extends PlaceholderExpansion {
             try {
                 int i = Integer.parseInt(strings[0]);
                 if (i >= 0 && i < 6) {
-                    ServerPlayerEntity serverPlayer = PlayerExtensionsKt.getPlayer(player.getUniqueId());
+                    ServerPlayer serverPlayer = PlayerExtensionsKt.getPlayer(player.getUniqueId());
                     if (serverPlayer == null){
                         return "未找到玩家";
                     }

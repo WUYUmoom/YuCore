@@ -14,8 +14,7 @@ import com.wuyumoom.yucore.api.BukkitAPI;
 import com.wuyumoom.yucore.api.pokemon.BattleCaptureFix;
 import com.wuyumoom.yucore.api.pokemon.PokemonLabel;
 import kotlin.Unit;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 
 public class PokemonLabelEvent {
@@ -48,11 +47,11 @@ public class PokemonLabelEvent {
         if (pokemonLabel.isLabel()) {
             return;
         }
-        Entity owner = event.getPokeBall().getOwner();
-        if (owner instanceof ServerPlayerEntity serverPlayerEntity){
+        net.minecraft.world.entity.Entity owner = event.getPokeBall().getOwner();
+        if (owner instanceof ServerPlayer serverPlayerEntity){
             if (pokemonLabel.getLabelBoolean("YuBanCapture")) {
                 BattleCaptureFix.onBattleCaptureFix(event.getPokeBall(), event.getPokemon());
-                BukkitAPI.sendMessage(YuCore.getMessage().get("noCapture"), Bukkit.getPlayer(serverPlayerEntity.getUuid()));
+                BukkitAPI.sendMessage(YuCore.getMessage().get("noCapture"), Bukkit.getPlayer(serverPlayerEntity.getUUID()));
                 event.cancel();
                 return;
             }
@@ -61,7 +60,7 @@ public class PokemonLabelEvent {
                 if (!yuSpecifyCapture.equals(serverPlayerEntity.getName().getString())) {
                     BattleCaptureFix.onBattleCaptureFix(event.getPokeBall(), event.getPokemon());
                     event.cancel();
-                    BukkitAPI.sendMessage(YuCore.getMessage().get("noCapture"), Bukkit.getPlayer(owner.getUuid()));
+                    BukkitAPI.sendMessage(YuCore.getMessage().get("noCapture"), Bukkit.getPlayer(owner.getUUID()));
                 }
 
             }
@@ -72,7 +71,7 @@ public class PokemonLabelEvent {
         if (event.getBattle().getPlayers().size() > 1) {
             return;
         }
-        ServerPlayerEntity first = event.getBattle().getPlayers().getFirst();
+        ServerPlayer first = event.getBattle().getPlayers().getFirst();
         for (BattleSide side : event.getBattle().getSides()) {
             for (BattleActor actor : side.getActors()) {
                 for (BattlePokemon battlePokemon : actor.getPokemonList()) {
@@ -86,7 +85,7 @@ public class PokemonLabelEvent {
                     }
                     // 检查是否禁止战斗
                     if (pokemonLabel.getLabelBoolean("YuBanBattle")) {
-                        BukkitAPI.sendMessage(YuCore.getMessage().get("noBattle"), Bukkit.getPlayer(first.getUuid()));
+                        BukkitAPI.sendMessage(YuCore.getMessage().get("noBattle"), Bukkit.getPlayer(first.getUUID()));
                         event.cancel();
                         return;
                     }
@@ -94,7 +93,7 @@ public class PokemonLabelEvent {
                     String specifiedPlayer = pokemonLabel.getLabelContainsBoolean("YuSpecifyBattle");
                     // 如果设置了指定玩家且当前玩家不是指定玩家，则取消对战
                     if (!specifiedPlayer.equals("no") && !first.getName().getString().equals(specifiedPlayer)) {
-                        BukkitAPI.sendMessage(YuCore.getMessage().get("noBattle"), Bukkit.getPlayer(first.getUuid()));
+                        BukkitAPI.sendMessage(YuCore.getMessage().get("noBattle"), Bukkit.getPlayer(first.getUUID()));
                         event.cancel();
                         return;
                     }

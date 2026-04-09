@@ -3,10 +3,12 @@ package com.wuyumoom.yucore.api;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.pokemon.PokemonAPI;
+import com.wuyumoom.yucore.api.pokemon.base.YuSprite;
 import com.wuyumoom.yucore.file.view.Button;
 import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -19,11 +21,11 @@ public class ItemStackAPI {
         List<String> lore = BukkitAPI.onReplace(yamlConfiguration.getStringList("lore"));
         Material material = Material.getMaterial(BukkitAPI.onReplace(yamlConfiguration.getString("id")));
         if (material != null){
-            ItemStack itemStack = ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore);
+            ItemStack itemStack = ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore,yamlConfiguration.getBoolean("enchantment",false));
             if (isNbt){
                 return setNBT(itemStack, "yuitem", yamlConfiguration.getName());
             }
-            return ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore);
+            return ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore,yamlConfiguration.getBoolean("enchantment",false));
         }
         return null;
 
@@ -34,16 +36,49 @@ public class ItemStackAPI {
         List<String> lore = BukkitAPI.onReplace(yamlConfiguration.getStringList("lore"));
         Material material = Material.getMaterial(BukkitAPI.onReplace(yamlConfiguration.getString("id")));
         if (material != null){
-            return ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore);
+            return ItemStackAPI.onSetItemMeta(ItemStackAPI.onGetItemStack(material), name, lore,yamlConfiguration.getBoolean("enchantment",false));
         }
         return null;
 
     }
+//    public static ItemStack onSetItemMeta(Button button){
+//        ItemStack itemStack = new ItemStack(Material.STONE);
+//        if (button.getId().contains(":")){
+//            String[] split = button.getId().split(":");
+//            if (split[0].equals("pokemon")) {
+//                try {
+//                    itemStack = NMS.getMNSFaItemStack(YuSprite.getSprite(split[1]));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }else {
+//            Material material = Material.getMaterial(button.getId());
+//            if (material != null){
+//                itemStack = new ItemStack( material);
+//            }
+//        }
+//        ItemMeta itemMeta = itemStack.getItemMeta();
+//        if (itemMeta != null) {
+//            itemMeta.setDisplayName(button.getName());
+//            itemMeta.setLore(button.getLore());
+//            itemMeta.setEnchantmentGlintOverride(button.getEnchantment());
+//            if (button.getEnchantment()){
+//                itemMeta.addEnchant(Enchantment.UNBREAKING, 1,true);
+//            }
+//        }
+//        itemStack.setItemMeta(itemMeta);
+//        setNBT(itemStack, "yuitem", button.getButtonName());
+//        return itemStack;
+//    }
 
-    public static ItemStack onSetItemMeta(ItemStack itemStack,String name,List<String> lore){
+    public static ItemStack onSetItemMeta(ItemStack itemStack,String name,List<String> lore,boolean enchantment){
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(lore);
         itemMeta.setDisplayName(name);
+        if (enchantment){
+            itemMeta.addEnchant(Enchantment.UNBREAKING, 1,true);
+        }
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

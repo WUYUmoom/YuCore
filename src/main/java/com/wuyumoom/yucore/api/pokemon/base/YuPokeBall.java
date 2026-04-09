@@ -3,7 +3,7 @@ package com.wuyumoom.yucore.api.pokemon.base;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.cobblemon.mod.common.pokeball.PokeBall;
 import com.wuyumoom.yucore.api.BukkitAPI;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,7 +16,7 @@ public class YuPokeBall {
         if (BukkitAPI.isPureChinese(lowerCase)&&!zhPokeBall.isEmpty()) {
             return zhPokeBall.get(lowerCase);
         } else {
-            return PokeBalls.getPokeBall(Identifier.of("cobblemon:"+lowerCase));
+            return PokeBalls.getPokeBall(ResourceLocation.parse("cobblemon:"+lowerCase));
         }
     }
 

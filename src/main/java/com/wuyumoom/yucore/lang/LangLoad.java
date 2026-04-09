@@ -17,9 +17,9 @@ import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.pokemon.PokemonAPI;
 import com.wuyumoom.yucore.api.pokemon.base.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.TextContent;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.bukkit.Bukkit;
 
 public class LangLoad {
@@ -53,8 +53,8 @@ public class LangLoad {
 
     public static void loadMove() {
         for (MoveTemplate moveTemplate : Moves.INSTANCE.all()) {
-            TextContent content = moveTemplate.getDisplayName().getContent();
-            if (content instanceof TranslatableTextContent translatableContent) {
+            ComponentContents content = moveTemplate.getDisplayName().getContents();
+            if (content instanceof TranslatableContents translatableContent) {
                 if (YuCore.isIsTranslatePath()){
                     String s = YuCore.getCobblemon().getZh().get(translatableContent.getKey());
                     if (s == null) {
@@ -86,17 +86,17 @@ public class LangLoad {
     }
     public static void loadPokeBall() {
         for (PokeBall pokeBall : PokeBalls.INSTANCE.all()) {
-            ItemStack stack = pokeBall.stack(1);
+            net.minecraft.world.item.ItemStack stack = pokeBall.stack(1);
             if (YuCore.isIsTranslatePath()){
-                String s = YuCore.getCobblemon().getZh().get(stack.getTranslationKey());
+                String s = YuCore.getCobblemon().getZh().get(stack.getDescriptionId());
                 if (s == null){
-                    s = stack.getTranslationKey();
+                    s = stack.getDescriptionId();
                     System.out.println("球"+s);
-                    Bukkit.getConsoleSender().sendMessage(stack.getName().getString() + "球:未找到翻译目录,请在assets/cobblemon/lang/zh_cn.json里添加翻译");
+                    Bukkit.getConsoleSender().sendMessage(stack.getHoverName().getString() + "球:未找到翻译目录,请在assets/cobblemon/lang/zh_cn.json里添加翻译");
                 }
                 YuPokeBall.getPokeBall().put(s, pokeBall);
             }else {
-                YuPokeBall.getPokeBall().put(stack.getName().getString(), pokeBall);
+                YuPokeBall.getPokeBall().put(stack.getHoverName().getString(), pokeBall);
             }
         }
     }
@@ -118,8 +118,8 @@ public class LangLoad {
     }
     public static void loadSpecies() {
         for (Species species : PokemonSpecies.INSTANCE.getSpecies()) {
-            TextContent content = species.getTranslatedName().getContent();
-            if (content instanceof TranslatableTextContent translatableContent) {
+            ComponentContents content = species.getTranslatedName().getContents() ;
+            if (content instanceof TranslatableContents translatableContent) {
                 if (YuCore.isIsTranslatePath()){
                     String s = YuCore.getCobblemon().getZh().get(translatableContent.getKey());
                     if (s == null) {

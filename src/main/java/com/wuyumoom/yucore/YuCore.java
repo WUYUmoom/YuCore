@@ -37,7 +37,7 @@ public class YuCore extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§c  \\ V / | | | |   / _ \\| '__/ _ \\");
         Bukkit.getConsoleSender().sendMessage("§c   | || |_| | |__| (_) | | |  __/");
         Bukkit.getConsoleSender().sendMessage("§c   |_| \\__,_|\\____\\___/|_|  \\___|");
-        if (FabricLoader.getInstance().isModLoaded("cobblemon")) {
+        if (hasClass("com.cobblemon.mod.common.Cobblemon")) {
             new PokemonLabelEvent();
             Bukkit.getConsoleSender().sendMessage("§b已启动方可萌API");
             cobblemon.getZh();
@@ -52,6 +52,14 @@ public class YuCore extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§e§l语之宝可梦API §6§l启动完成！");
         Bukkit.getConsoleSender().sendMessage("§e§l作者 : 姬无语 §6§lQQ1841375451");
         Bukkit.getConsoleSender().sendMessage("==================================================================================");
+    }
+    private boolean hasClass(String className) {
+        try {
+            Class.forName(className, false, this.getClass().getClassLoader());
+            return true;
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+            return false;
+        }
     }
 
     public static YuCore getInstance() {

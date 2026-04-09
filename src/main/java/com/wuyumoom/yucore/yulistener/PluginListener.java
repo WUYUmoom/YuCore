@@ -3,9 +3,11 @@ package com.wuyumoom.yucore.yulistener;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.task.Advertisement;
 import com.wuyumoom.yucore.view.AbstractUI;
+import com.wuyumoom.yucore.view.GuiSession;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 
 public class PluginListener implements Listener {
@@ -13,6 +15,27 @@ public class PluginListener implements Listener {
     public void onClick(InventoryClickEvent event){
         if (event.getWhoClicked().getOpenInventory().getTopInventory().getHolder() instanceof AbstractUI abstractUI) {
             abstractUI.onClick(event.getSlot(), event);
+        }
+        if (event.getWhoClicked().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession) {
+            for (var callback : guiSession.getClickCallbacks()) {
+                callback.invoke(event);
+            }
+        }
+    }
+    @EventHandler
+    public void onClose(InventoryOpenEvent event){
+        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession){
+            for (var callback : guiSession.getCloseCallbacks()) {
+                callback.invoke();
+            }
+        }
+    }
+    @EventHandler
+    public void onOpen(InventoryOpenEvent event){
+        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession) {
+            for (var callback : guiSession.getOpenCallbacks()) {
+                callback.invoke();
+            }
         }
     }
 

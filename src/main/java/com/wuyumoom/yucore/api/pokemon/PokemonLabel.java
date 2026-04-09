@@ -2,11 +2,10 @@ package com.wuyumoom.yucore.api.pokemon;
 
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.wuyumoom.yucore.api.BukkitAPI;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ public class PokemonLabel {
         this.pokemon = pokemon;
     }
 
-    private final NbtCompound nbt;
+    private final CompoundTag nbt;
     private Set<String> listLabel = new HashSet<>();
     private final Pokemon pokemon;
 
@@ -35,9 +34,9 @@ public class PokemonLabel {
      */
 
     public void saveLabelList(Set<String> labels) {
-        NbtList nbtList = new NbtList();
+        ListTag nbtList = new ListTag();
         for (String label : labels) {
-            nbtList.add(NbtString.of(label));
+            nbtList.add(StringTag.valueOf(label));
         }
         pokemon.getPersistentData().remove("YuLabelList");
         pokemon.getPersistentData().put("YuLabelList", nbtList);
@@ -71,7 +70,7 @@ public class PokemonLabel {
 
     private Set<String> getListLabel() {
         if (nbt.contains("YuLabelList", 9)) {
-            NbtList nbtList = nbt.getList("YuLabelList", NbtElement.STRING_TYPE); // 8是NbtString的类型ID
+            ListTag nbtList = nbt.getList("YuLabelList", 8); // 8是NbtString的类型ID
             Set<String> result = new HashSet<>();
             // 遍历NbtList并将每个元素转换为String
             for (int i = 0; i < nbtList.size(); i++) {

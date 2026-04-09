@@ -3,18 +3,12 @@ package com.wuyumoom.yucore.api.pokemon;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
-import com.cobblemon.mod.common.api.pokemon.PokemonPropertyExtractor;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleRegistry;
-import com.cobblemon.mod.common.command.argument.PartySlotArgumentType;
-import com.cobblemon.mod.common.command.argument.PokemonPropertiesArgumentType;
-import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.properties.UncatchableProperty;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
@@ -22,11 +16,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.BukkitAPI;
 import com.wuyumoom.yucore.api.pokemon.base.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -43,9 +37,9 @@ import java.util.regex.Pattern;
 public class PokemonAPI {
 
     //将宝可梦转换为nbt
-    public static String getPokemonNBT(Pokemon pokemon,ServerPlayerEntity serverPlayerEntity){
-        NbtCompound nbtTagCompound = new NbtCompound();
-        nbtTagCompound = pokemon.saveToNBT(serverPlayerEntity.getRegistryManager(), nbtTagCompound);
+    public static String getPokemonNBT(Pokemon pokemon, ServerPlayer serverPlayerEntity){
+        CompoundTag nbtTagCompound = new CompoundTag();
+        nbtTagCompound = pokemon.saveToNBT(serverPlayerEntity.registryAccess(), nbtTagCompound);
         return nbtTagCompound.toString();
     }
     public static Pokemon onSetForPokemon(Pokemon pokemon, String[] strings) {
@@ -62,6 +56,9 @@ public class PokemonAPI {
     public static void onSetPokemon(Pokemon pokemon, String string) throws Exception {
         String[] actor = BukkitAPI.onSetString(string, ":");
         switch (actor[0]) {
+            case "删除标签":
+                PokemonLabel.getInstance(pokemon).removeLabel(actor[1]);
+                break;
             case "标签":
                 PokemonLabel.getInstance(pokemon).addLabel(actor[1]);
                 break;
@@ -224,7 +221,7 @@ public class PokemonAPI {
 
     //给玩家一个宝可梦
     public static boolean onGivePokemon(Player player, Pokemon pokemon) {
-        ServerPlayerEntity serverPlayerEntity = PlayerExtensionsKt.getPlayer(player.getUniqueId());
+        ServerPlayer serverPlayerEntity = PlayerExtensionsKt.getPlayer(player.getUniqueId());
         if (serverPlayerEntity == null) {
             return false;
         }
@@ -273,7 +270,7 @@ public class PokemonAPI {
     private static final Pattern QUOTE_PATTERN = Pattern.compile("'(.*?)'");
     public static String onGetTranslatePath(Object path) {
         if (!YuCore.isIsTranslatePath()) {
-            return ((MutableText) path).getString();
+            return ((MutableComponent) path).getString();
         }
         Matcher matcher = QUOTE_PATTERN.matcher(path.toString().replace(" ", ""));
         if (matcher.find()) {
@@ -282,11 +279,11 @@ public class PokemonAPI {
                 return s; // 返回第一个匹配组的内容（不包含单引号）
             }
         }
-        String s = YuCore.getCobblemon().getZh().get(((MutableText) path).getString());
+        String s = YuCore.getCobblemon().getZh().get(((MutableComponent) path).getString());
         if (s != null) {
             return s;
         }
-        return ((MutableText) path).getString();
+        return ((MutableComponent) path).getString();
     }
 
     public static @Nullable Pokemon onGetTeamPokemon(Player player, int index) {
@@ -294,7 +291,7 @@ public class PokemonAPI {
             YuCore.getInstance().getServer().getLogger().info("index错误" + index);
             return null;
         }
-        ServerPlayerEntity serverPlayerEntity = PlayerExtensionsKt.getPlayer(player.getUniqueId());
+        ServerPlayer serverPlayerEntity = PlayerExtensionsKt.getPlayer(player.getUniqueId());
         if (serverPlayerEntity == null) {
             return null;
         }
@@ -338,7 +335,7 @@ public class PokemonAPI {
 
     public static String onGetHeldItemName(Pokemon pokemon) {
         if (!pokemon.getHeldItem$common().isEmpty()) {
-            return pokemon.getHeldItem$common().getName().getString();
+            return pokemon.getHeldItem$common().getHoverName().getString();
         } else {
             return "无";
         }
@@ -348,19 +345,15 @@ public class PokemonAPI {
     public static void onBattleBroadcastChatMessage(Player player, String message) {
         PokemonBattle battleByParticipatingPlayerId = BattleRegistry.INSTANCE.getBattleByParticipatingPlayerId(player.getUniqueId());
         if (battleByParticipatingPlayerId != null) {
-            battleByParticipatingPlayerId.getActors().iterator().next().sendMessage(Text.literal(message));
+            battleByParticipatingPlayerId.getActors().iterator().next().sendMessage(Component.literal(message));
         }
-    }
-
-    public static Boolean onSpawnPoke(Entity pokemonEntity, World world) {
-        return ((CraftWorld) world).getHandle().addFreshEntity(pokemonEntity, CreatureSpawnEvent.SpawnReason.SPAWNER);
     }
 
     public static Pokemon onNBTLoadPokemon(String player, String nbt) {
         try {
             return Pokemon.Companion.loadFromNBT(
-                    PlayerExtensionsKt.getPlayer(Bukkit.getOfflinePlayer(player).getUniqueId()).getRegistryManager(),
-                    StringNbtReader.parse(nbt)
+                    PlayerExtensionsKt.getPlayer(Bukkit.getOfflinePlayer(player).getUniqueId()).registryAccess(),
+                    TagParser.parseTag(nbt)
             );
         } catch (CommandSyntaxException | IllegalStateException var3) {
             YuCore.getInstance().getServer().getLogger().severe("加载宝可梦 NBT 失败！错误字段可能包含非法 Stat 类型（如 accuracy）");

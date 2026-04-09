@@ -7,7 +7,7 @@ import com.wuyumoom.yucore.api.ItemStackAPI;
 import com.wuyumoom.yucore.api.NMS;
 import com.wuyumoom.yucore.api.pokemon.PokemonAPI;
 import com.wuyumoom.yucore.file.view.Button;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,8 +16,8 @@ import java.util.Map;
 
 public class YuSprite {
     public static ItemStack onSetPokemonItem(ItemStack itemStack, Pokemon pokemon) {
-        NbtCompound nbtTagCompound = new NbtCompound();
-        nbtTagCompound = pokemon.saveToNBT(pokemon.getOwnerPlayer().getRegistryManager(), nbtTagCompound);
+        CompoundTag nbtTagCompound = new CompoundTag();
+        nbtTagCompound = pokemon.saveToNBT(pokemon.getOwnerPlayer().registryAccess(), nbtTagCompound);
         ItemStackAPI.setNBT(itemStack, "pokemonNBT", nbtTagCompound.toString());
         ItemStackAPI.setNBT(itemStack, "UUID", pokemon.getUuid().toString());
         return itemStack;
