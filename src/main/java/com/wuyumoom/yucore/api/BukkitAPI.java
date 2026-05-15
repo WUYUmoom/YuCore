@@ -32,7 +32,7 @@ public class BukkitAPI {
         return slotsArray;
     }
     public static int[] onSetInt(String s) {
-        if (s == null){
+        if (s == null || s.isEmpty()){
             return new int[0];
         }
         String[] slotsArray = s.split(",");

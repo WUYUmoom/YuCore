@@ -16,27 +16,6 @@ public class PluginListener implements Listener {
         if (event.getWhoClicked().getOpenInventory().getTopInventory().getHolder() instanceof AbstractUI abstractUI) {
             abstractUI.onClick(event.getSlot(), event);
         }
-        if (event.getWhoClicked().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession) {
-            for (var callback : guiSession.getClickCallbacks()) {
-                callback.invoke(event);
-            }
-        }
-    }
-    @EventHandler
-    public void onClose(InventoryOpenEvent event){
-        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession){
-            for (var callback : guiSession.getCloseCallbacks()) {
-                callback.invoke();
-            }
-        }
-    }
-    @EventHandler
-    public void onOpen(InventoryOpenEvent event){
-        if (event.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof GuiSession guiSession) {
-            for (var callback : guiSession.getOpenCallbacks()) {
-                callback.invoke();
-            }
-        }
     }
 
     @EventHandler

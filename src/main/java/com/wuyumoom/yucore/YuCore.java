@@ -4,6 +4,7 @@ import com.wuyumoom.yucore.lang.CobblemonLang;
 import com.wuyumoom.yucore.api.Message;
 import com.wuyumoom.yucore.lang.LangLoad;
 import com.wuyumoom.yucore.papi.Papi;
+import com.wuyumoom.yucore.view.ClickEvent;
 import com.wuyumoom.yucore.yulistener.PluginListener;
 import com.wuyumoom.yucore.yulistener.PokemonLabelEvent;
 import net.fabricmc.loader.api.FabricLoader;
@@ -27,6 +28,7 @@ public class YuCore extends JavaPlugin {
         isTranslatePath = config.getBoolean("TranslatePath",false);
         message = new Message(config).getMessage();
         Bukkit.getPluginManager().registerEvents(new PluginListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ClickEvent(), this);
         new Papi().register();
         onMessage();
     }

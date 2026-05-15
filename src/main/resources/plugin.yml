@@ -1,5 +1,5 @@
 name: YuCore
-version: '1.6.3'
+version: '1.6.9'
 main: com.wuyumoom.yucore.YuCore
 api-version: '1.21'
 depend: [ NBTAPI ]

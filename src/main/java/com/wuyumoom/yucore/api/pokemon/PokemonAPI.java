@@ -42,16 +42,17 @@ public class PokemonAPI {
         nbtTagCompound = pokemon.saveToNBT(serverPlayerEntity.registryAccess(), nbtTagCompound);
         return nbtTagCompound.toString();
     }
-    public static Pokemon onSetForPokemon(Pokemon pokemon, String[] strings) {
+    public static Boolean onSetForPokemon(Pokemon pokemon, String[] strings) {
         for (String string : strings) {
             try {
                 onSetPokemon(pokemon, string);
             } catch (Exception e) {
-                System.out.println("参数错误:"+string);
+                Bukkit.getConsoleSender().sendMessage("参数错误:"+string);
+                return false;
             }
 
         }
-        return pokemon;
+        return true;
     }
     public static void onSetPokemon(Pokemon pokemon, String string) throws Exception {
         String[] actor = BukkitAPI.onSetString(string, ":");
