@@ -7,7 +7,6 @@ import com.wuyumoom.yucore.papi.Papi;
 import com.wuyumoom.yucore.view.ClickEvent;
 import com.wuyumoom.yucore.yulistener.PluginListener;
 import com.wuyumoom.yucore.yulistener.PokemonLabelEvent;
-import net.fabricmc.loader.api.FabricLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

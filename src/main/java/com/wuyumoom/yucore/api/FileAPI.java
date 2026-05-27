@@ -2,7 +2,6 @@ package com.wuyumoom.yucore.api;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;

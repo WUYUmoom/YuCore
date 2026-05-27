@@ -51,6 +51,9 @@ open class GuiSession(
     private fun executeCommand() {
         onClick { event ->
             val currentItem = event.currentItem ?: return@onClick
+            if (currentItem.type.isAir || currentItem.amount <= 0) {
+                return@onClick
+            }
             val nbt = ItemStackAPI.getNBT(currentItem, "yubutton") ?: return@onClick
             val button = viewConfiguration.button[nbt] ?: return@onClick
             button.cmd.forEach { cmd ->

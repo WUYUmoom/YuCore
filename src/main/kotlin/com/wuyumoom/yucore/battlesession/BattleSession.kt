@@ -9,9 +9,9 @@ import java.util.*
 abstract class BattleSession {
     companion object {
         private val battleMap: MutableMap<UUID, BattleSession> = mutableMapOf()
+        @JvmStatic
+        fun getBattleSession(battleId: UUID): BattleSession? = battleMap[battleId]
     }
-
-    abstract var attached : ConfigurationSection
     /**
      * 战斗结束的回调
      */
