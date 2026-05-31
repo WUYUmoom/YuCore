@@ -1,5 +1,6 @@
 package com.wuyumoom.yucore;
 
+import com.wuyumoom.yucore.battlesession.uitl.Util;
 import com.wuyumoom.yucore.lang.CobblemonLang;
 import com.wuyumoom.yucore.api.Message;
 import com.wuyumoom.yucore.lang.LangLoad;
@@ -29,6 +30,7 @@ public class YuCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PluginListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickEvent(), this);
         new Papi().register();
+        Util.INSTANCE.registerEvents();
         onMessage();
     }
     private void onMessage() {
