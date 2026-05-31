@@ -18,10 +18,6 @@ import java.util.concurrent.CompletableFuture
 private const val MIN_HORIZONTAL_DIST = 2.0
 
 object Util {
-    /**
-     * 随机钛晶属性
-     */
-    private fun randomTera(): String = TeraTypes.random(true).name
 
     const val VIRTUAL_AI_MARK_KEY = "yucobblemonsession.virtual_ai"
 
