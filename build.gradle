@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.wuyumoom.yucore.YuCore'
-version = '1.6.14-SNAPSHOT'
+version = '1.6.16-SNAPSHOT'
 
 loom {
     splitEnvironmentSourceSets()
@@ -46,7 +46,6 @@ dependencies {
     /*<-spigot->*/
     //compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT'
-    compileOnly(fileTree(dir: "libs", includes: ["*.jar"]))
     //implementation 'org.spigotmc:spigot:1.21.1-R0.1@jar'
     //compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     //PAPI
@@ -56,6 +55,7 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:0.16.13"
     modImplementation "net.fabricmc.fabric-api:fabric-api:0.115.4+1.21.1"
+    compileOnly(fileTree(dir: "libs", includes: ["*.jar"]))
 }
 processResources {
     filteringCharset 'UTF-8'

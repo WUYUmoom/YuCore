@@ -2,7 +2,10 @@ package com.wuyumoom.yucore.battlesession
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle
 import com.cobblemon.mod.common.api.battles.model.actor.ActorType
+import com.cobblemon.mod.common.api.npc.NPCClasses
 import com.cobblemon.mod.common.battles.BattleFormat
+import com.cobblemon.mod.common.entity.npc.NPCEntity
+import net.minecraft.world.level.Level
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 

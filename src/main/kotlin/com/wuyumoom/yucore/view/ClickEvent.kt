@@ -1,8 +1,10 @@
 package com.wuyumoom.yucore.view
 
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 
 class ClickEvent: Listener {
@@ -17,7 +19,7 @@ class ClickEvent: Listener {
     }
 
     @EventHandler
-    fun onClose(event: InventoryOpenEvent) {
+    fun onClose(event: InventoryCloseEvent) {
         val holder = event.player.openInventory.topInventory.holder
         if (holder is GuiSession) {
             for (callback in holder.closeCallbacks) {
