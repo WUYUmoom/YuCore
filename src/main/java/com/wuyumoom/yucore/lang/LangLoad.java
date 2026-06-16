@@ -134,7 +134,7 @@ public class LangLoad {
                 for (String label : species.getLabels()) {
                     YuSpecies.addLabelSpecies(label, species);
                 }
-                YuSpecies.addTypeSpecies(species.getPrimaryType().getDisplayName().getString(),species);
+                YuSpecies.addTypeSpecies(species.getPrimaryType(),species);
             }
         }
     }

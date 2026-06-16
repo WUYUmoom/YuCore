@@ -1,6 +1,8 @@
 package com.wuyumoom.yucore.api.pokemon.base;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.api.types.ElementalType;
+import com.cobblemon.mod.common.api.types.ElementalTypes;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.BukkitAPI;
@@ -13,7 +15,7 @@ import java.util.*;
 public class YuSpecies {
     private static final Map<String, Species> species = new HashMap<>();
     private static final Map<String, List<Species>> labelSpecies = new HashMap<>();
-    private static Map<String, List<Species> > typeSpecies = new HashMap<>();
+    private static Map<ElementalType, List<Species> > typeSpecies = new HashMap<>();
 
 
     public static Map<String, Species> getSpecies() {
@@ -23,11 +25,25 @@ public class YuSpecies {
         return labelSpecies;
     }
 
-    public static void addTypeSpecies(String type, Species species){
+    public static void addTypeSpecies(ElementalType type, Species species){
         addSpeciesList(type, species, typeSpecies);
     }
+    public static Map<ElementalType, List<Species> > getAllTypeSpecies() {
+        return typeSpecies;
+    }
+    public static List<Species> getTypeSpecies(ElementalType type) {
+        return typeSpecies.get(type);
+    }
+    public static List<Species> getTypeSpecies(String string) {
+        try {
+            return typeSpecies.get(ElementalTypes.get(string));
+        } catch (Exception e) {
+            YuCore.getInstance().getLogger().warning("未找到对应宝可梦种类: " + string);
+            return null;
+        }
+    }
 
-    private static void addSpeciesList(String type, Species species, Map<String, List<Species>> typeSpecies) {
+    private static void addSpeciesList(ElementalType type, Species species, Map<ElementalType, List<Species>> typeSpecies) {
         List<Species> speciesList = typeSpecies.get(type);
         if (speciesList == null){
             List<Species> newSpeciesList = new ArrayList<>();
@@ -36,6 +52,17 @@ public class YuSpecies {
         }else {
             speciesList.add(species);
             typeSpecies.put(type, speciesList);
+        }
+    }
+    private static void addSpeciesList(String label, Species species, Map<String, List<Species>> labelSpecies) {
+        List<Species> speciesList = labelSpecies.get(label);
+        if (speciesList == null){
+            List<Species> newSpeciesList = new ArrayList<>();
+            newSpeciesList.add(species);
+            labelSpecies.put(label, newSpeciesList);
+        }else {
+            speciesList.add(species);
+            labelSpecies.put(label, speciesList);
         }
     }
 
