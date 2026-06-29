@@ -31,6 +31,18 @@ public class PokemonLabelEvent {
             this.isYuBanNick(event);
             return Unit.INSTANCE;
         });
+        CobblemonEvents.EXPERIENCE_CANDY_USE_PRE.subscribe(Priority.HIGHEST, event -> {
+            if (event.isCanceled()){
+                Bukkit.getConsoleSender().sendMessage("事件被取消");
+            }else {
+                Bukkit.getConsoleSender().sendMessage("事件未被取消");
+            }
+            return Unit.INSTANCE;
+        });
+        CobblemonEvents.EXPERIENCE_CANDY_USE_POST.subscribe(Priority.HIGHEST, event -> {
+            Bukkit.getConsoleSender().sendMessage("事件执行完毕");
+            return Unit.INSTANCE;
+        });
     }
 
 

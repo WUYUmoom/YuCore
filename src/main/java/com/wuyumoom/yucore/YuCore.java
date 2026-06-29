@@ -30,7 +30,6 @@ public class YuCore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PluginListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickEvent(), this);
         new Papi().register();
-        Util.INSTANCE.registerEvents();
         onMessage();
     }
     private void onMessage() {
@@ -51,6 +50,7 @@ public class YuCore extends JavaPlugin {
             LangLoad.loadMove();
             LangLoad.loadStat();
             LangLoad.loadGender();
+            Util.INSTANCE.registerEvents();
         }
         Bukkit.getConsoleSender().sendMessage("§e§l语之宝可梦API §6§l启动完成！");
         Bukkit.getConsoleSender().sendMessage("§e§l作者 : 姬无语 §6§lQQ1841375451");

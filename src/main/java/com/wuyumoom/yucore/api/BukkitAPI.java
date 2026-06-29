@@ -12,9 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BukkitAPI {
-    public static boolean hasInventorySpace(Player player) {
-        return player.getInventory().firstEmpty() != -1;
-    }
+
     private static final String regex = "^[\\u4e00-\\u9fa5（）：・]+$";
     public static boolean isPureChinese(String str) {
         return str.matches(regex);

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.wuyumoom.yucore.YuCore'
-version = '1.6.18-SNAPSHOT'
+version = '1.6.21-SNAPSHOT'
 
 loom {
     splitEnvironmentSourceSets()
@@ -63,57 +63,6 @@ processResources {
         expand project.properties
     }
 }
-
-tasks.register('deployToServer') {
-    group = 'deployment'
-    description = '上传插件到远程服务器'
-
-    dependsOn 'remapJar'
-
-    doLast {
-        def libsDir = layout.buildDirectory.dir('libs').get().asFile
-        // 先查找 remap 后的 JAR，找不到再找其他 JAR
-        def jarFile = libsDir.listFiles({ file ->
-            file.name.startsWith('YuCore') &&
-                    file.name.endsWith('.jar') &&
-                    !file.name.contains('sources')
-        } as FileFilter)?.max { it.lastModified() }
-
-        if (jarFile == null) {
-            throw new GradleException('未找到构建产物 JAR 文件')
-        }
-
-        def serverHost = 'wuyumoom@202.189.4.208'
-        def remotePath1 = '/mnt/1区/plugins/'
-        def remotePath2 = '/mnt/登录/plugins/'
-        def jarPath = jarFile.absolutePath
-
-        println "准备上传: ${jarFile.name}"
-        println "文件大小: ${(jarFile.length() / 1024 / 1024).setScale(2, java.math.RoundingMode.HALF_UP)} MB"
-        println "文件路径: ${jarFile.absolutePath}"
-        println "目标服务器: $serverHost"
-        println "目标路径 1: $remotePath1"
-        println "目标路径 2: $remotePath2"
-
-        // 执行第一个 SCP 命令
-        println "开始上传到路径 1..."
-        exec {
-            commandLine 'bash', '-c',
-                    "scp -o StrictHostKeyChecking=no '${jarPath}' '${serverHost}:${remotePath1}'"
-        }
-        println "路径 1 上传成功!"
-
-        // 执行第二个 SCP 命令
-        println "开始上传到路径 2..."
-        exec {
-            commandLine 'bash', '-c',
-                    "scp -o StrictHostKeyChecking=no '${jarPath}' '${serverHost}:${remotePath2}'"
-        }
-        println "路径 2 上传成功!"
-
-        println '所有文件上传成功!'
-    }
-}
 test {
     useJUnitPlatform()
 }
@@ -149,7 +98,4 @@ tasks.register("neoforgeJar", Jar) {
     archiveFileName = "$project.name-$project.version-neoforge.jar"
     from(sourceSets.main.output, sourceSets.main.resources)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-tasks.named('build') {
-    finalizedBy 'deployToServer'
 }

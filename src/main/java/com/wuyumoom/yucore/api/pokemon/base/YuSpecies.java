@@ -8,7 +8,6 @@ import com.wuyumoom.yucore.YuCore;
 import com.wuyumoom.yucore.api.BukkitAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -54,20 +53,20 @@ public class YuSpecies {
             typeSpecies.put(type, speciesList);
         }
     }
-    private static void addSpeciesList(String label, Species species, Map<String, List<Species>> labelSpecies) {
-        List<Species> speciesList = labelSpecies.get(label);
+    private static void addSpeciesList(String label, Species species) {
+        List<Species> speciesList = YuSpecies.labelSpecies.get(label);
         if (speciesList == null){
             List<Species> newSpeciesList = new ArrayList<>();
             newSpeciesList.add(species);
-            labelSpecies.put(label, newSpeciesList);
+            YuSpecies.labelSpecies.put(label, newSpeciesList);
         }else {
             speciesList.add(species);
-            labelSpecies.put(label, speciesList);
+            YuSpecies.labelSpecies.put(label, speciesList);
         }
     }
 
     public static void addLabelSpecies(String label, Species species){
-        addSpeciesList(label, species, labelSpecies);
+        addSpeciesList(label, species);
     }
 
 
@@ -105,10 +104,10 @@ public class YuSpecies {
         if (BukkitAPI.isPureChinese(lowerCase) && !YuSpecies.species.isEmpty()) {
             species = YuSpecies.species.get(lowerCase);
         } else {
-            species = PokemonSpecies.getByName(lowerCase);
+            species = PokemonSpecies.getByName(lowerCase.replace(" ", "").replace("-", ""));
         }
         if (species == null) {
-            throw new Exception("未找到对应宝可梦种类: " + name); // 抛出异常，提示未找到对应宝可梦
+            throw new Exception("未找到对应宝可梦种类: " + lowerCase); // 抛出异常，提示未找到对应宝可梦
         }
         return species;
     }

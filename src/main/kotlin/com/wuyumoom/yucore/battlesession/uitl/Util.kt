@@ -19,7 +19,8 @@ private const val MIN_HORIZONTAL_DIST = 2.0
 
 object Util {
 
-    const val VIRTUAL_AI_MARK_KEY = "yucobblemonsession.virtual_ai"
+    const val VIRTUAL_AI_MARK_KEY = "yucobblemonsession.new.virtual_ai"
+    const val VIRTUAL_AI_MARK_KEY_FAINTED = "yucobblemonsession.new.virtual_ai_fainted"
 
     fun registerEvents() {
         CobblemonEvents.LOOT_DROPPED.subscribe { event ->
@@ -30,15 +31,9 @@ object Util {
                 event.cancel()
             }
         }
-
         CobblemonEvents.POKEMON_FAINTED.subscribe { event ->
-            if (event.pokemon.persistentData.getBoolean(VIRTUAL_AI_MARK_KEY)) {
+            if (event.pokemon.persistentData.getBoolean(VIRTUAL_AI_MARK_KEY_FAINTED)) {
                 event.pokemon.removeHeldItem()
-            }
-        }
-        CobblemonEvents.EXPERIENCE_GAINED_EVENT_PRE.subscribe { event ->
-            if (event.pokemon.persistentData.getBoolean(VIRTUAL_AI_MARK_KEY)) {
-                event.cancel()
             }
         }
     }
@@ -46,10 +41,16 @@ object Util {
     fun markVirtualAIPokemon(pokemon: Pokemon) {
         pokemon.persistentData.putBoolean(VIRTUAL_AI_MARK_KEY, true)
     }
+    fun markVirtualAIPokemonFainted(pokemon: Pokemon) {
+        pokemon.persistentData.putBoolean(VIRTUAL_AI_MARK_KEY_FAINTED, true)
+    }
 
     fun unmarkVirtualAIPokemon(pokemon: Pokemon) {
         if (pokemon.persistentData.contains(VIRTUAL_AI_MARK_KEY)) {
             pokemon.persistentData.remove(VIRTUAL_AI_MARK_KEY)
+        }
+        if (pokemon.persistentData.contains(VIRTUAL_AI_MARK_KEY_FAINTED)) {
+            pokemon.persistentData.remove(VIRTUAL_AI_MARK_KEY_FAINTED)
         }
     }
 
